@@ -1,0 +1,7 @@
+option java_outer_classname = "MessageTest";
+
+message Test {
+
+ required int32 res = 1;
+
+}

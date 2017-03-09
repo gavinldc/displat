@@ -1,0 +1,176 @@
+package com.gc.common;
+
+public class BitConverter {
+	
+	/**
+	 * 
+	 * @param value
+	 * @param index 0 ~ 7
+	 * @return
+	 */
+	public static boolean isTrue(byte value, byte index) {
+		return (value & (0x01 << index)) != 0;
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 * @param index 0 ~ 7
+	 * @return
+	 */
+	public static byte setTrue(byte value,int index) {
+		return (byte)(value | (0x01 << index));
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 * @param index 0 ~ 7
+	 * @return
+	 */
+	public static byte setFalse(byte value,int index) {
+		return (byte)(value & ~(0x01 << index));
+	}
+	
+	public static byte[] getBytes(boolean value) {
+		if (value) {
+			return new byte[]{1};
+		}
+		else {
+			return new byte[]{0};
+		}
+	}
+	
+	public static byte[] getBytes(short value) {
+		byte[] buff = new byte[2];
+		for (int i = 0;i < buff.length;++i) {
+			buff[1 - i] = (byte)((value >> (i * 8)) & 0xff);
+		}
+		return buff;
+	}
+	
+	public static byte[] getUnsignedShortBytes(int value) {
+		byte[] buff = new byte[2];
+		for (int i = 0;i < buff.length;++i) {
+			buff[1 - i] = (byte)((value >> (i * 8)) & 0xff);
+		}
+		return buff;
+	}
+	
+	public static byte[] getBytes(int value) {
+		byte[] buff = new byte[4];
+		for (int i = 0;i < buff.length;++i) {
+			buff[3 - i] = (byte)((value >> (i * 8)) & 0xff);
+		}
+		return buff;
+	}
+	
+	public static byte[] getUnsignedIntBytes(long value) {
+		byte[] buff = new byte[4];
+		for (int i = 0;i < buff.length;++i) {
+			buff[3 - i] = (byte)((value >> (i * 8)) & 0xff);
+		}
+		return buff;
+	}
+	
+	public static byte[] getBytes(long value) {
+		byte[] buff = new byte[8];
+		for (int i = 0;i < buff.length;++i) {
+			buff[7 - i] = (byte)(((long)value >> (i * 8)) & 0xff);
+		}
+		return buff;
+	}
+	
+	public static byte[] getBytes(float value) {
+		return getBytes(Float.floatToIntBits(value));
+	}
+	
+	public static byte[] getBytes(double value) {
+		return getBytes(Double.doubleToLongBits(value));
+	}
+	
+	public static byte getUnsignedByte(short value) {
+		return (byte)(value & 0xff);
+	}
+	
+	public static short getUnsignedByte(byte b) {
+		return (short)(b & 0xff);
+	}
+	
+	public static short getShort(byte[] buff) {
+		return getShort(buff, 0);
+	}
+	
+	public static short getShort(byte[] buff,int off) {
+		short value = 0;
+		for (int i = 0;i < 2;++i) {
+			value |= ((buff[off + (1 - i)] & 0xff) << (i * 8));
+		}
+		return value;
+	}
+	
+	public static int getUnsignedShort(byte[] buff) {
+		return getUnsignedShort(buff, 0);
+	}
+	
+	public static int getUnsignedShort(byte[] buff,int off) {
+		int value = 0;
+		for (int i = 0;i < 2;++i) {
+			value |= ((buff[off + (1 - i)] & 0xff) << (i * 8));
+		}
+		return value;
+	}
+	
+	public static int getInt(byte[] buff) {
+		return getInt(buff, 0);
+	}
+	
+	public static int getInt(byte[] buff,int off) {
+		int value = 0;
+		for (int i = 0;i < 4;++i) {
+			value |= ((buff[off + (3 - i)] & 0xff) << (i * 8));
+		}
+		return value;
+	}
+	
+	public static long getUnsignedInt(byte[] buff) {
+		return getUnsignedInt(buff, 0);
+	}
+	
+	public static long getUnsignedInt(byte[] buff,int off) {
+		int value = 0;
+		for (int i = 0;i < 4;++i) {
+			value |= ((long)(buff[off + (3 - i)] & 0xff) << (i * 8));
+		}
+		return value;
+	}
+	
+	public static long getLong(byte[] buff) {
+		return getLong(buff, 0);
+	}
+	
+	public static long getLong(byte[] buff,int off) {
+		long value = 0;
+		for (int i = 0;i < 8;++i) {
+			value |= (((long)buff[off + (7 - i)] & 0xff) << (i * 8));
+		}
+		return value;
+	}
+	
+	public static float getFloat(byte[] buff) {
+		return getFloat(buff, 0);
+	}
+	
+	public static float getFloat(byte[] buff,int off) {
+		return Float.intBitsToFloat(getInt(buff, off));
+	}
+	
+	public static double getDouble(byte[] buff) {
+		return getDouble(buff, 0);
+	}
+	
+	public static double getDouble(byte[] buff,int off) {
+		return Double.longBitsToDouble(getLong(buff, off));
+	}
+	
+}

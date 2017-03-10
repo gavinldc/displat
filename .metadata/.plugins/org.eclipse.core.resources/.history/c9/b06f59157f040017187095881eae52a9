@@ -1,0 +1,45 @@
+package com.gc.nettyserver;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import com.gc.rpc.connection.Connection;
+import com.gc.rpc.connection.ConnectionManager;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+
+public class ProtoServerHandler extends ChannelInboundHandlerAdapter{
+	
+	private Logger logger=Logger.getLogger(this.getClass());
+	
+	@Override
+	public void channelActive(ChannelHandlerContext ctx)
+            throws Exception{
+		logger.log(Level.INFO, "channelActive");
+        ConnectionManager.getInstance().createConnection(ctx.channel());
+	}
+	
+	@Override
+	public void channelRead(ChannelHandlerContext ctx, Object msg)
+			throws Exception {
+		logger.log(Level.INFO, "channelRead");
+        com.gc.rpc.packages.Package pack=(com.gc.rpc.packages.Package)msg;
+        logger.log(Level.INFO, "messageId===="+pack.getMessageId());
+        Connection connection=ConnectionManager.getInstance().createConnection(ctx.channel());
+		DataHandlerManager.process(pack, connection);
+	}
+
+	@Override
+	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+		logger.log(Level.INFO, "channelReadComplete");
+	}
+
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
+			throws Exception {
+		logger.log(Level.INFO, "exceptionCaught===="+cause.getMessage());
+		cause.printStackTrace();
+		ConnectionManager.getInstance().getConnection(ctx.channel()).close();
+	}	
+}

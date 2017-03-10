@@ -1,0 +1,16 @@
+package com.dc.nettyclient;
+
+
+import org.apache.log4j.Logger;
+
+
+/**
+ * 从Eureka获取server列表
+ * @author gavin
+ *
+ */
+public class RibbonDiscover {
+
+	private Logger logger=Logger.getLogger(this.getClass());
+	
+}

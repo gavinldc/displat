@@ -36,5 +36,6 @@
   	<module>servicediscover</module>
   	<module>rpc</module>
   	<module>common</module>
+  	<module>gateaway</module>
   </modules>
 </project>

@@ -1,0 +1,8 @@
+package com.dc.nettyclient;
+
+import javax.servlet.annotation.WebFilter;
+
+@WebFilter(filterName = "clientInit", urlPatterns = "/*")
+public class ClientInitFilter {
+
+}

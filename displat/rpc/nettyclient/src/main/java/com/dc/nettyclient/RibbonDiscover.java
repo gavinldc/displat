@@ -1,10 +1,12 @@
 package com.dc.nettyclient;
 
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import com.gc.common.Strings;
 
 /**
  * 从Eureka获取server列表
@@ -12,18 +14,21 @@ import org.springframework.web.client.RestTemplate;
  *
  */
 @Component
-@RibbonClient(name = "discover-service", configuration = RibbonConfigration.class)
 public class RibbonDiscover {
 
-	@Autowired
-	private RestTemplate restTemplate;
+	private Logger logger=Logger.getLogger(this.getClass());
 	
-	private String discoverServer(){
-		
-		restTemplate.getForObject("http://discover-service/getEnv", String.class);
-		
-		return null;
-		
-	}
+	 @Autowired
+	 RestTemplate restTemplate;
+	 
+	 public String[] getServerInfo()throws Exception{
+		 String res= restTemplate.getForEntity("http://server-registry-1/env", String.class).getBody();
+		 if(Strings.isNullOrEmpty(res)){
+			 throw new Exception("active connection not found");
+		 }
+		 logger.info("get serverinfo :"+res);
+		 return res.split(",");
+	 }
+	 
 	
 }

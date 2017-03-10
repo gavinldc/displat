@@ -1,0 +1,29 @@
+package com.gc.rpc.common;
+/**
+ * 
+ * @author gavin
+ * 
+ */
+public class BlockResult<T>{
+
+	private T obj;
+	
+    public synchronized void set(T obj){
+    	this.obj=obj;
+    	this.notify();
+    }
+	
+	/**
+	 * ����100��ȴ����
+	 * @return
+	 */
+	public synchronized T get(){
+		try {
+			this.wait();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return obj; 
+	}
+}

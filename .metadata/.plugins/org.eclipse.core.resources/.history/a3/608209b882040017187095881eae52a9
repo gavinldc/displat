@@ -1,0 +1,62 @@
+package com.gc.nettyclient.pojo;
+
+import com.gc.rpc.connection.Connection;
+import com.gc.rpc.connection.ConnectionManager;
+import com.gc.rpc.connection.ConnectionState;
+import com.google.protobuf.InvalidProtocolBufferException;
+import org.apache.log4j.Logger;
+import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timeout;
+import io.netty.util.Timer;
+import io.netty.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+public abstract class SingleHandler {
+	private Logger log = Logger.getLogger(this.getClass());
+	private static final Timer HASHED_WHEEL_TIMER = new HashedWheelTimer();
+
+	public abstract void register(Connection connection, MessageRegister.Register proto);
+
+	public void process(com.gc.rpc.packages.Package pack, Connection connection) {
+		switch (pack.getMessageId()) {
+		case MessageId.HEATBEAT:
+			log.info("receive heartbeat");
+			try {
+				startHeartBeat(5);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			return;
+		case MessageId.SERVER_TO_CLIENT_REGISTER:
+			MessageRegister.Register proto2;
+			try {
+				proto2 = MessageRegister.Register.parseFrom(pack.getBody());
+				register(connection, proto2);
+			} catch (InvalidProtocolBufferException e) {
+				e.printStackTrace();
+			}
+			return;
+		default:
+			break;
+		}
+	}
+
+	private void startHeartBeat(final int heartbeat) throws Exception {
+		HASHED_WHEEL_TIMER.newTimeout(new TimerTask() {
+			public void run(Timeout timeout) throws Exception {
+				if (healthCheck()) {
+					com.gc.rpc.packages.Package heartbeatpack = new com.gc.rpc.packages.Package(MessageId.HEATBEAT,
+							new byte[0]);
+					ConnectionManager.getInstance().getConnection().send(heartbeatpack, null);
+				}
+			}
+		}, heartbeat, TimeUnit.SECONDS);
+	}
+
+	private boolean healthCheck() {
+		if (ConnectionManager.getInstance().getConnection().getState().equals(ConnectionState.Login)) {
+			return true;
+		}
+		return false;
+	}
+}

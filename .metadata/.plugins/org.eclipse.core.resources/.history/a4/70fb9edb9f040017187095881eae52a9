@@ -1,0 +1,62 @@
+package com.dc.nettyclient;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+
+import com.netflix.client.config.IClientConfig;
+import com.netflix.loadbalancer.IPing;
+import com.netflix.loadbalancer.IRule;
+import com.netflix.loadbalancer.PingUrl;
+import com.netflix.loadbalancer.RandomRule;
+
+public class RibbonConfigration {
+	 @Autowired  
+	    private IClientConfig ribbonClientConfig;  
+	  
+	    /** 
+	     * Our IPing is a PingUrl, which will ping a URL to check the status of each 
+	     * server.provider has, as you��ll recall, a method mapped to the / path; 
+	     * that means that Ribbon will get an HTTP 200 response when it pings a 
+	     * running provider server. 
+	     *  
+	     * server list defined in application.yml :listOfServers: localhost:8000, 
+	     * localhost:8002,localhost:8003 
+	     *  
+	     */  
+	    @Bean  
+	    public IPing ribbonPing(IClientConfig config) {  
+	        // ping url will try to access http://microservice-provider/provider/ to  
+	        // see if reponse code is 200 . check PingUrl.isAlive()  
+	        // param /provider/ is the context-path of provider service  
+	        return new PingUrl(false, "/provider/");  
+	    }  
+	  
+	    /** 
+	     * The IRule we set up, the AvailabilityFilteringRule, will use Ribbon��s 
+	     * built-in circuit breaker functionality to filter out any servers in an 
+	     * ��open-circuit�� state: if a ping fails to connect to a given server, or if 
+	     * it gets a read failure for the server, Ribbon will consider that server 
+	     * ��dead�� until it begins to respond normally. 
+	     *  
+	     * AvailabilityFilteringRule | ���˵���Щ��Ϊһֱ����ʧ�ܵı����Ϊcircuit tripped�ĺ��server�������˵���Щ�߲����ĵĺ��server��active connections �������õ���ֵ�� | ʹ��һ��AvailabilityPredicate����������server���߼�����ʵ�;��Ǽ��status���¼�ĸ���server������״̬ 
+	     * RandomRule  | ���ѡ��һ��server 
+	     * BestAvailabl eRule | ѡ��һ����С�Ĳ��������server | �������Server�����Server��tripped�ˣ�����ԣ���ѡ������ 
+	     * RoundRobinRule  |  roundRobin��ʽ��ѯѡ��  |  ��ѯindex��ѡ��index��Ӧλ�õ�server 
+	     * WeightedResponseTimeRule  |  ������Ӧʱ�����һ��weight����Ӧʱ��Խ����weightԽС����ѡ�еĿ�����Խ�͡�  |  һ ����̨�̶߳��ڵĴ�status�����ȡ������Ӧʱ�䣬Ϊÿ��server����һ��weight��Weight�ļ���Ҳ�Ƚϼ�responsetime ��ȥÿ��server�Լ�ƽ����responsetime��server��Ȩ�ء����տ�ʼ���У�û���γ�statasʱ��ʹ��roubine����ѡ�� server�� 
+	     * RetryRule  |  ��ѡ���ĸ��ؾ�����Ի������Ի��ơ� |  ��һ������ʱ����ڵ�ѡ��server���ɹ�����һֱ����ʹ��subRule�ķ�ʽѡ��һ�����õ�server 
+	     * ZoneAvoidanceRule  |  �����ж�server������������ܺ�server�Ŀ�����ѡ��server  |  ʹ ��ZoneAvoidancePredicate��AvailabilityPredicate���ж��Ƿ�ѡ��ĳ��server��ǰһ���ж��ж�һ�� zone�����������Ƿ���ã��޳������õ�zone��������server����AvailabilityPredicate���ڹ��˵������������ Server�� 
+	     * @param config 
+	     * @return 
+	     */  
+	    @Bean  
+	    public IRule ribbonRule(IClientConfig config) {  
+	        // return new AvailabilityFilteringRule();  
+	         return new RandomRule();//  
+	        // return new BestAvailableRule();  
+	        // return new RoundRobinRule();//��ѯ  
+	        // return new WeightedResponseTimeRule();  
+	        // return new RetryRule();  
+	        // return new ZoneAvoidanceRule();  
+	    }  
+}

@@ -3,6 +3,8 @@ package com.dc.nettyserver;
 
 
 
+import java.util.concurrent.TimeUnit;
+
 import com.dc.rpc.common.codec.CustomProtobufDecoder;
 import com.dc.rpc.common.codec.CustomProtobufEncoder;
 
@@ -16,6 +18,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.timeout.IdleStateHandler;
 
 public class Server {
 
@@ -37,6 +40,8 @@ public class Server {
 					ch.pipeline().addLast(new CustomProtobufEncoder());
 					// 注册handler
 					ch.pipeline().addLast(new ProtoServerHandler());
+					// 心跳检测
+					ch.pipeline().addLast("ping",new IdleStateHandler(60, 45, 30,TimeUnit.SECONDS));
 				}
 			});
 			b.option(ChannelOption.SO_BACKLOG, 128);

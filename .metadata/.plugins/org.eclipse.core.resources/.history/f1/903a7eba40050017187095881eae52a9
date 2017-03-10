@@ -1,0 +1,18 @@
+package com.dc.nettyclient;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.ribbon.RibbonClient;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+/**
+ * 从Eureka获取server列表
+ * @author gavin
+ *
+ */
+public class RibbonDiscover {
+
+	
+	
+}

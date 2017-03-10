@@ -1,0 +1,33 @@
+server:
+  port: 8181
+zuul:
+  #ignored-services: 'hello'   
+  routes:
+    movie:                                                         
+      path: /movie/**                                         
+      url: http://www.baidu.com  
+    users:
+      path: /index/**
+      url: forward:/home  
+    hello:
+      path: /hello/**
+      serviceId: service-1
+eureka:  
+  client:  
+    serviceUrl:  
+      defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/
+ribbon:  
+  MaxAutoRetries: 1   
+  #MaxAutoRetriesNextServer: 1 
+hystrix:
+   command.StoreSubmission.execution.isolation.thread.timeoutInMilliseconds: 1000
+   command.StoreSubmission.circuitBreaker.requestVolumeThreshold: 4
+   command.StoreSubmission.circuitBreaker.sleepWindowInMilliseconds: 60000
+   command.StoreSubmission.metrics.rollingStats.timeInMilliseconds: 180000
+   collapser.StoreSubmission.maxRequestsInBatch: 1
+   collapser.StoreSubmission.requestCache.enabled: FALSE
+   threadpool.StoreSubmission.coreSize: 30
+   threadpool.StoreSubmission.metrics.rollingStats.timeInMilliseconds: 180000
+spring:  
+  application:  
+    name: zuul-server 

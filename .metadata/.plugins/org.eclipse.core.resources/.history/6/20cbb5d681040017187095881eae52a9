@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.dc</groupId>
+    <artifactId>displat</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>rpc</artifactId>
+  <packaging>pom</packaging>
+  <name>rpc</name>
+  
+  <dependencies>
+  	<dependency>
+  		<groupId>com.google.protobuf</groupId>
+  		<artifactId>protobuf-java</artifactId>
+  		<version>2.5.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>io.netty</groupId>
+  		<artifactId>netty-all</artifactId>
+  		<version>4.1.7.Final</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>log4j</groupId>
+  		<artifactId>log4j</artifactId>
+  	</dependency>
+  </dependencies>
+  <modules>
+  	<module>rpc-common</module>
+  	<module>nettyserver</module>
+  </modules>
+</project>

@@ -1,6 +1,0 @@
-package com.dc.nettyclient;
-
-@WebFilter(filterName = "clientInit", urlPatterns = "/*")
-public class ClientInitFilter {
-
-}

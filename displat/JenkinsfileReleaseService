@@ -1,0 +1,23 @@
+node {
+    def mvnHome
+    stage('Preparation') {
+        print 'DEBUG: parameter gameCenterApiVersion = ' + params.gameCenterApiVersion
+
+        git ''
+        mvnHome = tool 'M3'
+    }
+    stage('Release') {
+        def pom = readMavenPom file: 'pom.xml'
+        def releaseVersion = params.releaseVersion
+        def version = pom.version.replace("1.0-SNAPSHOT", "${releaseVersion}")
+        sh "${mvnHome}/bin/mvn -DreleaseVersion=${version} -DdevelopmentVersion=${pom.version} -DpushChanges=false -DlocalCheckout=true -DpreparationGoals=initialize" +
+                " -Dresume=false" +
+                " -Dgame-api-common.version=${params.gameApiCommonVersion}" +
+                " -Dbalance-game.version=${params.balanceGameVersion}" +
+                " -Dgame-dao-cardgame.version=${params.gameDaoCardGame}" +
+                " -Dgame.center.api.version=${params.gameCenterApi}" +
+                " release:prepare release:perform -B"
+        sh "git push --set-upstream origin master"
+        sh "git push origin ${pom.artifactId}-${version}"
+    }
+}

@@ -1,0 +1,26 @@
+node {
+   def mvnHome
+   stage('Preparation') { // for display purposes
+      git branch: 'master', url: ''
+      mvnHome = tool 'M3'
+   }
+   stage('Build') {
+      if (isUnix()) {
+         sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore=false clean package -U"
+      } else {
+         bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore=false clean package -U/)
+      }
+   }
+  // stage('Results') {
+   //   junit '**/target/surefire-reports/TEST-*.xml'
+    //  archive 'target/*.jar'
+  // }
+   stage('Deploy Snapshot') {
+      if (isUnix()) {
+         sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore=false clean deploy"
+      } else {
+         bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore=false clean deploy/)
+      }
+    }
+}
+

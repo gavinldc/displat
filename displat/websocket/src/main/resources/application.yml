@@ -1,0 +1,8 @@
+server:
+  port: 80
+api:
+  swagger:
+    enable: true
+spring:
+  application:
+    name: ws-app

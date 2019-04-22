@@ -38,7 +38,10 @@
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
-    
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+    </dependency>
     
     
     </dependencies>
@@ -51,5 +54,6 @@
 		<module>gateaway</module>
 		<module>websocket</module>
 		<module>state-machine</module>
+		<module>wsgateway</module>
 	</modules>
 </project>
